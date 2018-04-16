@@ -1,0 +1,52 @@
+
+DEBUG = 
+DEBUG  = -g
+
+PROJECT       = pitschi_analyze
+SRCDIR	      = ./src
+INCLUDEDIR	= -I./include/
+VPATH  		=$(SRCDIR)
+HEADERS       = data.h 
+EXE	       =pitschi_analyze
+
+
+CC            = g++
+CCFLAGS       = -O -Wall -fPIC ${DEBUG}
+LD            = g++ 
+LDFLAGS       = -O ${DEBUG}
+SOFLAGS       = -shared
+ 
+ROOTCFLAGS   := $(shell root-config --cflags)
+ROOTLIBS     := $(shell root-config --libs)
+ROOTGLIBS    := $(shell root-config --glibs)
+CCFLAGS      += $(ROOTCFLAGS)
+LIBS          = $(ROOTLIBS) 
+GLIBS         = $(ROOTGLIBS) 
+
+ROOT_INCLUDE = /usr/local/farm/root/include
+
+OBJECT = ${PROJECT}.o
+$(PROJECT) : $(OBJECT) data.h
+	$(LD) $(LDFLAGS) $(OBJECT) -L/usr/X11R6/lib64 $(GLIBS) -lX11 -o $@
+
+
+.cc.o: data.h
+	$(CC) -Wno-deprecated -c $(CCFLAGS) $(INCLUDEDIR) $< -I$(ROOT_INCLUDE) 
+
+
+
+INCLUDEDIR = /usr/include
+CFLAGS = $(DEBUG) -O2 -fomit-frame-pointer -Wall -I$(INCLUDEDIR) -I.
+
+all:
+	 make pitschi_analyze ; 
+
+
+
+
+clean:
+	rm -f $(VFILES) *.o *~ core*	
+
+
+
+
